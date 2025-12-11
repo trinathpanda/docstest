@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Release Notes - Zcash Me</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+    <style>
+        .repo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .repo-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .repo-item:hover {
+            background: var(--hover);
+            color: var(--text-main);
+        }
+
+        .repo-item.active {
+            background: var(--hover);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .commits-header {
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .commits-title {
+            font-size: 2rem;
+            margin: 0 0 0.5rem;
+            color: var(--text-main);
+        }
+
+        .commits-subtitle {
+            color: var(--text-muted);
+        }
+
+        .repo-section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2rem 0 1rem;
+            color: var(--text-main);
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+        }
+
+        .commit-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .commit-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .commit-item:last-child {
+            border-bottom: none;
+        }
+
+        .commit-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .commit-sha {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--hover);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+
+        .commit-sha:hover {
+            background: var(--border);
+        }
+
+        .commit-message {
+            font-size: 1rem;
+            color: var(--text-main);
+            margin-bottom: 0.25rem;
+            line-height: 1.5;
+        }
+
+        .commit-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div><span>docs.zcash.me</span></div>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item"><a href="../../index.html" class="nav-link">← Back to Hub</a></li>
+                </ul>
+                <h3
+                    style="padding: 0 1rem; margin: 1.5rem 0 0.5rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">
+                    Repositories</h3>
+                <ul id="repo-list" class="repo-list">
+                    <li class="repo-item">Loading...</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <div class="breadcrumbs">
+                    <a href="../../index.html">Home</a> / <span>Release Notes</span>
+                </div>
+            </header>
+
+            <div id="release-notes-app">
+                <div class="commits-header">
+                    <h1 id="current-repo-name" class="commits-title">Loading...</h1>
+                    <p id="current-repo-desc" class="commits-subtitle"></p>
+                </div>
+                <div id="commits-container">
+                    <!-- Commits will be loaded here -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../../assets/script.js"></script>
+    <script>
+        const REPO_CONFIG = [
+            { owner: 'ZcashUsersGroup', name: 'ZcashMe', label: 'Address Directory' },
+            { owner: 'ZcashMe', name: 'Maps', label: 'Maps' }
+        ];
+
+        const releaseCache = {};
+        let ALL_REPOS = [];
+        let currentAbort = null;
+
+        async function init() {
+            await loadRepos();
+
+            // Handle URL params
+            const params = new URLSearchParams(window.location.search);
+            const repoParam = params.get('repo');
+
+            if (repoParam === 'all') {
+                selectRepo('all', 'All Repositories');
+            } else if (repoParam) {
+                // Find repo in list to get description
+                const repo = ALL_REPOS.find(r => r.name === repoParam);
+                if (repo) {
+                    selectRepo(repoParam, repo.description);
+                } else {
+                    // If repo not in config, default to all
+                    selectRepo('all', 'All Repositories');
+                }
+            } else {
+                // Default to All
+                selectRepo('all', 'All Repositories');
+            }
+        }
+
+        async function loadRepos() {
+            const list = document.getElementById('repo-list');
+            try {
+                // Initialize ALL_REPOS from Config
+                ALL_REPOS = REPO_CONFIG.map(repo => ({
+                    name: repo.name,
+                    owner: { login: repo.owner },
+                    description: repo.description,
+                    label: repo.label
+                }));
+
+                let html = `
+                    <li class="repo-item" data-repo="all" onclick="selectRepo('all', 'All Repositories')">
+                        All Repositories
+                    </li>
+                `;
+
+                html += ALL_REPOS.map(repo => {
+                    return `
+                    <li class="repo-item" data-repo="${repo.name}" onclick="selectRepo('${repo.name}', '${escapeHtml(repo.description || '')}')">
+                        ${repo.label}
+                    </li>
+                `}).join('');
+
+                list.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                list.innerHTML = '<li class="repo-item" style="color: var(--error)">Failed to load repos</li>';
+            }
+        }
+
+        window.selectRepo = function (name, desc) {
+            // Update URL
+            const url = new URL(window.location);
+            url.searchParams.set('repo', name);
+            window.history.pushState({}, '', url);
+
+            // Update UI
+            document.querySelectorAll('.repo-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.repo === name);
+            });
+
+            document.getElementById('current-repo-name').textContent = name === 'all' ? 'All Repositories' : name;
+            document.getElementById('current-repo-desc').textContent = desc || '';
+
+            const container = document.getElementById('commits-container');
+            container.innerHTML = '<p style="color: var(--text-muted)">Loading...</p>';
+
+            if (currentAbort) try { currentAbort.abort(); } catch (e) { }
+            currentAbort = new AbortController();
+            const signal = currentAbort.signal;
+
+            if (name === 'all') {
+                renderAllRepos(signal);
+            } else {
+                // Find owner
+                const repoData = ALL_REPOS.find(r => r.name === name);
+                if (repoData) {
+                    renderSingleRepo(repoData.owner.login, name, signal);
+                } else {
+                    container.innerHTML = '<p style="color: var(--error)">Repository not found in configuration.</p>';
+                }
+            }
+        };
+
+        async function renderAllRepos(signal) {
+            const container = document.getElementById('commits-container');
+            container.innerHTML = '';
+
+            for (const repo of ALL_REPOS) {
+                if (signal.aborted) break;
+                await fetchAndRenderRepoCommits(repo.owner.login, repo.name, container, signal);
+            }
+
+            if (container.children.length === 0) {
+                container.innerHTML = '<p>No commits found.</p>';
+            }
+        }
+
+        async function renderSingleRepo(owner, repo, signal) {
+            const container = document.getElementById('commits-container');
+            container.innerHTML = '';
+            await fetchAndRenderRepoCommits(owner, repo, container, signal);
+        }
+
+        async function fetchAndRenderRepoCommits(owner, repo, container, signal) {
+            const key = `${owner}/${repo}`;
+
+            // Helper to append content
+            const appendContent = (items) => {
+                if (!Array.isArray(items) || items.length === 0) return;
+
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <h2 class="repo-section-title">${owner}/${repo}</h2>
+                    <ul class="commit-list">
+                        ${items.map(c => {
+                    const shortSha = (c.sha || '').slice(0, 7);
+                    const msg = c.message || (c.commit && c.commit.message) || 'Commit';
+                    const dtRaw = c.date || (c.commit && c.commit.author && c.commit.author.date) || null;
+                    const date = dtRaw ? new Date(dtRaw).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }) : '';
+                    const fullSha = c.sha || '';
+                    const url = fullSha ? `https://github.com/${owner}/${repo}/commit/${fullSha}` : (c.html_url || '');
+                    let author = '';
+                    if (c.author && typeof c.author === 'object') author = c.author.login || '';
+                    else if (typeof c.author === 'string') author = c.author;
+                    else if (c.commit && c.commit.author) author = c.commit.author.name || '';
+
+                    return `
+                                <li class="commit-item">
+                                    <div class="commit-message">${escapeHtml(msg)}</div>
+                                    <div class="commit-meta">
+                                        <a href="${url}" target="_blank" class="commit-sha">${shortSha}</a>
+                                        ${date ? `<span>• ${date}</span>` : ''}
+                                        ${author ? `<span>• ${escapeHtml(author)}</span>` : ''}
+                                    </div>
+                                </li>
+                            `;
+                }).join('')}
+                    </ul>
+                `;
+                container.appendChild(section);
+            };
+
+            // Check cache
+            if (releaseCache[key]) {
+                appendContent(releaseCache[key]);
+                return;
+            }
+
+            // Optimization for Main Repo: use commits.json
+            // We check if this repo is the "docs" repo by checking the name/owner in our config
+            // For modularity, we can check if it matches the first entry or specific logic, 
+            // but let's just keep the check for ZcashUsersGroup/zcashme explicitly or via the config properties if we added one.
+            // Since we hardcoded the check before, let's keep it safe. 
+            if (owner === 'ZcashUsersGroup' && repo === 'zcashme') {
+                try {
+                    const res = await fetch('../../commits.json', { signal });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data) && data.length > 0) {
+                            releaseCache[key] = data;
+                            appendContent(data);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    // Ignore and fall back to API
+                }
+            }
+
+            // Fetch from API
+            try {
+                const commits = await fetchAllCommits(owner, repo, signal);
+                if (commits.length > 0) {
+                    releaseCache[key] = commits;
+                    appendContent(commits);
+                }
+            } catch (e) {
+                console.error(`Error fetching ${key}`, e);
+                const errDiv = document.createElement('div');
+                errDiv.style.color = 'var(--error)';
+                errDiv.textContent = `Failed to load ${key}: ${e.message}`;
+                container.appendChild(errDiv);
+            }
+        }
+
+        async function fetchAllCommits(owner, repo, signal) {
+            const all = [];
+            let page = 1;
+            // Fetch only first page (100 commits) as per previous optimization
+            const api = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=100&page=${page}`;
+            const res = await fetch(api, { cache: 'no-store', signal });
+            if (res.ok) {
+                const batch = await res.json();
+                if (Array.isArray(batch)) {
+                    all.push(...batch);
+                }
+            }
+            return all;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,582 @@
+:root {
+  /* Color Palette - Professional & Clean */
+  --bg-body: #f7f1e8;
+  --bg-panel: #f8f9fa;
+  --bg-card: #f7f1e8;
+  --text-main: #1a1f2c;
+  --text-muted: #64748b;
+  --primary: #000000;
+  /* Zcash Black/Dark */
+  --accent: #193cb8;
+  /* Zcash Gold */
+  --border: #e2e8f0;
+  --hover: #f1f5f9;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+[data-theme="dark"] {
+  --bg-body: #0f172a;
+  --bg-panel: #1e293b;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #ffffff;
+  --accent: #193cb8;
+  --border: #fdc700;
+  --hover: #fdc700;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-body);
+  color: var(--text-main);
+  font-family: var(--font-main);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-main);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: 2.5rem;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.75rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.3em;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--text-main);
+}
+
+code {
+  background: var(--hover);
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+pre {
+  background: var(--bg-panel);
+  padding: 1rem;
+  border-radius: 8px;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+/* Layout */
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 280px;
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  /* overflow-y: auto; Removed to handle scroll in nav */
+  overflow-y: hidden;
+  /* padding: 2rem 1rem; Moved to children */
+  padding: 0;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.brand {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+  /* margin-bottom: 2rem; Removed/Adjusted */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 2rem 1rem;
+  /* Added padding here */
+  flex-shrink: 0;
+  /* Prevent shrinking */
+  /* border-bottom: 1px solid var(--border); Removed as per user request */
+}
+
+.brand span {
+  color: #193cb8;
+}
+
+/* Sidebar Nav Scrollable Area */
+.sidebar nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.nav-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin-bottom: 0.5rem;
+}
+
+.nav-link {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: var(--hover);
+  color: var(--text-main);
+}
+
+.nav-link.active {
+  color: var(--accent);
+}
+
+/* Hide mobile-only elements by default */
+.mobile-nav-close {
+  display: none;
+}
+
+/* TOC Styles */
+.toc-list {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.toc-item {
+  margin-top: 0.1rem;
+}
+
+.toc-entry {
+  display: flex;
+  align-items: center;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.toc-entry:hover {
+  background: var(--hover);
+}
+
+.toc-toggle {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.toc-toggle:hover {
+  color: var(--text-main);
+}
+
+.toc-toggle.expanded {
+  transform: rotate(90deg);
+}
+
+.toc-spacer {
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.toc-link {
+  display: block;
+  padding: 0.35rem 0.5rem 0.35rem 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toc-link:hover {
+  color: var(--text-main);
+}
+
+.toc-link.active {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.toc-sublist {
+  list-style: none;
+  padding-left: 0;
+  margin-left: 12px;
+  border-left: 1px solid var(--border);
+  display: none;
+}
+
+.toc-sublist.expanded {
+  display: block;
+}
+
+.toc-sublist .toc-item {
+  margin-top: 0;
+}
+
+.toc-sublist .toc-link {
+  font-size: 0.85rem;
+  padding-left: 0.75rem;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 3rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header / Breadcrumbs */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.breadcrumbs {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.breadcrumbs a {
+  color: var(--text-muted);
+}
+
+.breadcrumbs a:hover {
+  color: var(--text-main);
+}
+
+/* Theme Toggle */
+.theme-toggle {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  transition: background 0.2s;
+}
+
+.theme-toggle:hover {
+  background: var(--hover);
+}
+
+/* Hub Page Specifics */
+.hub-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+}
+
+.hub-hero {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.hub-title {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, var(--text-main) 0%, var(--text-muted) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hub-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.app-card {
+  background: var(--bg-card);
+  border: 1px solid #fdc700;
+  border-radius: 12px;
+  padding: 2rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 15px #fad243;
+  border-color: #fdc700;
+}
+
+.app-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--hover);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.app-name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: var(--text-main);
+}
+
+.app-desc {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+  flex: 1;
+}
+
+.app-link {
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.app-link::after {
+  content: '→';
+  margin-left: 0.5rem;
+  transition: transform 0.2s;
+}
+
+.app-card:hover .app-link::after {
+  transform: translateX(4px);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+    overflow-y: visible;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand {
+    padding: 1rem;
+    margin-bottom: 0;
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .sidebar nav {
+    display: none;
+    padding: 1rem;
+    border-top: 1px solid var(--border);
+    /* Mobile Menu Overlay Styles */
+    position: fixed;
+    top: 69px;
+    /* Height of the sticky brand header */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: calc(100vh - 69px);
+    background: var(--bg-body);
+    z-index: 150;
+    /* Above regular content */
+    overflow-y: auto;
+    width: 100%;
+  }
+
+  /* When open, just display it (the fixed positioning handles the overlay) */
+  .sidebar.mobile-open nav {
+    display: block;
+  }
+
+  /* Close Button inside Nav */
+  .mobile-nav-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--text-main);
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .mobile-nav-close:hover {
+    background: var(--hover);
+  }
+
+  /* Toggle Button */
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.4rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: var(--text-main);
+    width: 36px;
+    height: 36px;
+    /* Margin handled by JS or flex gap */
+    flex-shrink: 0;
+  }
+
+  /* Show original theme toggle again */
+  .brand #theme-toggle {
+    display: flex;
+  }
+
+  /* Hide original sidebar controls on mobile that we moved */
+  /* Note: We aren't moving the Release Notes link, so maybe we want to keep brand flex? */
+  /* But we want to hide the original theme toggle in the sidebar on mobile */
+  /* .brand #theme-toggle {
+    display: none;
+  } */
+
+  .main-content {
+    padding: 0;
+    /* We'll handle padding inside children or wrapper */
+  }
+
+  .hub-title {
+    font-size: 2.5rem;
+  }
+
+  /* Wrap content to manage padding better if header is sticky */
+  .page-header {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 69px;
+    /* Height of sidebar brand (~68px approx) */
+    z-index: 90;
+    background: var(--bg-body);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1rem;
+    margin-bottom: 2rem;
+  }
+
+  /* Hub page specific override: Header should stick to top as there is no sidebar */
+  .hub-container .page-header {
+    top: 0;
+  }
+
+  /* Fix sidebar sticking */
+  .sidebar {
+    top: 0;
+    z-index: 100;
+  }
+
+  /* Ensure content below doesn't get hidden */
+  #content-root,
+  #release-notes-app {
+    padding: 0 1rem 2rem;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-menu-toggle {
+    display: none;
+  }
+}
+
+/* Fix alignment for lists in main content */
+.main-content ul,
+.main-content ol {
+  padding-left: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.main-content li {
+  margin-bottom: 0.5rem;
+}

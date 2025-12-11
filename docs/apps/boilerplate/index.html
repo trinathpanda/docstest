@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>App Documentation Template</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="brand">
+                <div><span>docs.zcash.me</span></div>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li class="nav-item"><a href="../../index.html" class="nav-link">← Back to Hub</a></li>
+                </ul>
+                <div id="toc-root"></div>
+                <ul class="nav-links" style="margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem;">
+                    <li class="nav-item">
+                        <a href="../release-notes/index.html?repo=zcashme" class="nav-link">Release Notes</a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <div class="breadcrumbs">
+                    <a href="../../index.html">Home</a> / <span>Your App Name</span>
+                </div>
+            </header>
+
+            <div id="content-root">
+                <!-- Content loaded via JS -->
+                <p>Loading documentation...</p>
+            </div>
+        </main>
+    </div>
+
+    <script id="markdown-content" type="text/markdown">
+<!-- content.md will be loaded here by script.js, but fallback content can go here if needed, 
+     though the script usually fetches the external file if configured or reads this internal script tag. 
+     The existing apps seem to have content in the script tag AS WELL AS an external file? 
+     Let's check script.js logic later. For now, I'll put a placeholder here that matches content.md for consistency. -->
+# Welcome to Your App Documentation
+
+This is a template. Edit `content.md` to change this content.
+
+## Section 1
+
+Content for section 1.
+    </script>
+
+    <script src="../../assets/script.js"></script>
+</body>
+
+</html>

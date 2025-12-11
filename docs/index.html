@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zcash Me Documentation Hub</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono&display=swap"
+    rel="stylesheet">
+</head>
+
+<body>
+  <div class="hub-container">
+    <header class="page-header" style="border: none; margin-bottom: 0;">
+      <div class="brand"><span>docs.zcash.me</span></div>
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <a href="apps/release-notes/index.html"
+          style="color: var(--text-muted); text-decoration: none; font-weight: 500; font-size: 0.9rem;">Release
+          Notes</a>
+        <button id="theme-toggle" class="theme-toggle" aria-label="Toggle Theme">🌙</button>
+      </div>
+    </header>
+
+    <div class="hub-hero">
+      <h1 class="hub-title">Documentation Hub</h1>
+      <p class="hub-subtitle">Centralized resources for Zcash Me applications, tools, and services.</p>
+    </div>
+
+    <div class="app-grid">
+      <!-- Zcash Address Directory Card -->
+      <div class="app-card">
+        <div class="app-icon">📒</div>
+        <h2 class="app-name">Zcash Address Directory</h2>
+        <p class="app-desc">
+          A decentralized directory and messaging layer turning complex Zcash addresses into shareable, human-readable
+          profile links.
+        </p>
+        <a href="apps/zcash-directory/index.html" class="app-link">View Documentation</a>
+      </div>
+
+      <!-- Zcash.me Map Card -->
+      <div class="app-card">
+        <div class="app-icon">🗺️</div>
+        <h2 class="app-name">Zcash.me Map</h2>
+        <p class="app-desc">
+          Visualizes aggregated ZcashMe users data to show user clusters and communities worldwide without exposing
+          precise locations.
+        </p>
+        <a href="apps/map/index.html" class="app-link">View Documentation</a>
+      </div>
+
+      <!-- Newsletter Tool Card -->
+      <!-- <div class="app-card">
+        <div class="app-icon">📢</div>
+        <h2 class="app-name">Newsletter Tool</h2>
+        <p class="app-desc">
+          Send private ("shielded") broadcast messages to many recipients in a single operation.
+        </p>
+        <a href="apps/newsletter/index.html" class="app-link">View Documentation</a>
+      </div> -->
+    </div>
+  </div>
+
+  <script src="assets/script.js"></script>
+</body>
+
+</html>
